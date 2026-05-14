@@ -159,7 +159,10 @@ export default class PackageManager {
       subscriptions: [],
     };
     const adapter = this.app.vault.adapter;
-    adapter.write(this.getConfigPath(), JSON.stringify(initConfig, null, 2));
+    await adapter.write(
+      this.getConfigPath(),
+      JSON.stringify(initConfig, null, 2)
+    );
     this.configuration = initConfig;
   }
 
@@ -171,7 +174,10 @@ export default class PackageManager {
     logger("save");
     const adapter = this.app.vault.adapter;
     const configPath = this.getConfigPath();
-    adapter.write(configPath, JSON.stringify(this.configuration, null, 2));
+    await adapter.write(
+      configPath,
+      JSON.stringify(this.configuration, null, 2)
+    );
     logger("save end", this.configuration);
   }
 
@@ -517,7 +523,6 @@ export default class PackageManager {
         console.error(err);
       }
 
-    await this.save();
     logger("updatePackageInfoById end", { packageId });
   }
 
@@ -826,7 +831,7 @@ export default class PackageManager {
       };
     });
 
-    this.save();
+    await this.save();
     logger("updatePackagesList end");
     return newPackages;
   }
@@ -838,7 +843,7 @@ export default class PackageManager {
         this.updatePackageInfoById(p.packageId)
       )
     );
-    this.save();
+    await this.save();
     logger("updatePackagesInfo end");
   }
 
@@ -863,7 +868,7 @@ export default class PackageManager {
       packagesHash: this.configuration.packagesHash,
     })
 
-    this.save();
+    await this.save();
     logger("updatePackagesStats end");
   }
 
