@@ -139,6 +139,13 @@ export class PerformanceTracker {
     return timings.reduce((a, b) => a + b, 0) / timings.length;
   }
 
+  /** Most recent recorded duration for a label (useful right after a single run). */
+  getLastDuration(label: string): number | undefined {
+    const timings = this.timings.get(label);
+    if (!timings?.length) return undefined;
+    return timings[timings.length - 1];
+  }
+
   getSlowestOperations(count = 5): { label: string; average: number }[] {
     const operations = Array.from(this.timings.entries())
       .map(([label, timings]) => ({

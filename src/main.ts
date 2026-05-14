@@ -114,8 +114,11 @@ export default class TextGeneratorPlugin extends Plugin {
     perf.start("Settings");
     this.defaultSettings = DEFAULT_SETTINGS;
     await this.loadSettings();
+    perf.start("Settings: addStatusBar()");
     await this.addStatusBar();
+    perf.end("Settings: addStatusBar()");
     perf.end("Settings");
+    this.logSettingsLoadBreakdown();
 
     perf.start("Settings Tab");
     this.addSettingTab(new TextGeneratorSettingTab(this.app, this));
@@ -354,17 +357,41 @@ export default class TextGeneratorPlugin extends Plugin {
   }
 
   async loadSettings() {
-    const loadedSettings = await this.loadData();
+    const perf = PerformanceTracker.getInstance();
 
-    this.settings = {
-      ...DEFAULT_SETTINGS,
-      ...loadedSettings,
-    };
+    perf.start("Settings: loadData()");
+    const loadedSettings = await this.loadData();
+    perf.end("Settings: loadData()");
+
+    perf.start("Settings: merge defaults");
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, loadedSettings);
 
     this.settings.LLMProviderOptions ??= {};
     this.settings.LLMProviderOptionsKeysHashed ??= {};
+    perf.end("Settings: merge defaults");
 
+    perf.start("Settings: loadApikeys()");
     this.loadApikeys();
+    perf.end("Settings: loadApikeys()");
+  }
+
+  /** When `log-slowest-operations` is on, logs per-step settings load cost (last run). */
+  logSettingsLoadBreakdown() {
+    if (!this.settings?.options?.["log-slowest-operations"]) return;
+    const perf = PerformanceTracker.getInstance();
+    const loadData = perf.getLastDuration("Settings: loadData()");
+    const merge = perf.getLastDuration("Settings: merge defaults");
+    const apikeys = perf.getLastDuration("Settings: loadApikeys()");
+    const statusBar = perf.getLastDuration("Settings: addStatusBar()");
+    const total =
+      (loadData ?? 0) + (merge ?? 0) + (apikeys ?? 0) + (statusBar ?? 0);
+    const ms = (n: number | undefined) =>
+      n === undefined ? "n/a" : n.toFixed(2);
+    console.log(
+      `[TG:Performance] Settings load breakdown (last run, ms): ` +
+      `loadData=${ms(loadData)}, merge defaults=${ms(merge)}, ` +
+      `loadApikeys=${ms(apikeys)}, addStatusBar=${ms(statusBar)}, sum=${total.toFixed(2)}`
+    );
   }
 
   async saveSettings() {
