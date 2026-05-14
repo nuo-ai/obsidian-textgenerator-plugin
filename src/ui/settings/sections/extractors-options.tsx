@@ -29,7 +29,7 @@ const extendedInfo: Record<
   AudioExtractor: {
     name: "Audio Extractor (Whisper)",
     description:
-      "Enable or disable audio extractor using Whisper OpenAI ($0.006 / minute) supports multi-languages and accepts a variety of formats (m4a, mp3, mp4, mpeg, mpga, wav, webm).",
+      "Transcribe audio via an OpenAI-compatible POST …/audio/transcriptions API (Whisper and many proxies). Configure base URL, auth, and optional path overrides in Whisper settings.",
   },
 
   ImageExtractor: {
