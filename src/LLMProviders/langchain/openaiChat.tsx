@@ -2,7 +2,7 @@ import React from "react";
 import LangchainBase from "./base";
 
 import LLMProviderInterface, { LLMConfig } from "../interface";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 import { HeaderEditor, ModelsHandler } from "../utils";
 import debug from "debug";
 

@@ -3,7 +3,7 @@ import debug from "debug";
 import LangchainBase from "./base";
 import type { OpenAI, OpenAIInput } from "@langchain/openai";
 import LLMProviderInterface, { LLMConfig } from "../interface";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 import { HeaderEditor, ModelsHandler } from "../utils";
 
 import { AI_MODELS, Input, Message, SettingItem, useGlobal } from "../refs";
@@ -266,7 +266,7 @@ export default class LangchainOpenAIInstructProvider
     for (const message of messages) {
       numTokens += tokensPerMessage;
       for (const [key, value] of Object.entries(message)) {
-        numTokens += encoder.encode(value).length;
+        numTokens += encoder.encode(value as string).length;
         if (key === "name") {
           numTokens += tokensPerName;
         }

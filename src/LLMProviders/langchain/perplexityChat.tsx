@@ -1,7 +1,7 @@
 import React from "react";
 import LangchainBase from "./base";
 import LLMProviderInterface, { LLMConfig } from "../interface";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 import { ModelsHandler, HeaderEditor } from "../utils";
 import debug from "debug";
 import { OpenAIChatInput } from "@langchain/openai";

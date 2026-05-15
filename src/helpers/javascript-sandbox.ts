@@ -1,6 +1,6 @@
 import { Notice } from "obsidian";
 import handlebars from "handlebars";
-import { pull } from "langchain/hub";
+import { pullHubPromptCompat as pull } from "#/lib/langchain-hub-pull";
 
 import asyncHelpers from "../lib/async-handlebars-helper";
 import { createFileWithInput, createFolder } from "#/utils";

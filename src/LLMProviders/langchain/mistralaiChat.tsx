@@ -1,16 +1,15 @@
 import LangchainBase from "./base";
 import React from "react";
 import LLMProviderInterface, { LLMConfig } from "../interface";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 
 import debug from "debug";
 import { ModelsHandler } from "../utils";
-import { OpenAIChatInput } from "@langchain/openai";
 
 const logger = debug("textgenerator:llmProvider:mistralChat");
 
 import { Input, SettingItem, useGlobal } from "../refs";
-import { MistralAIInput } from "@langchain/mistralai";
+import type { MistralAIInput } from "@langchain/mistralai";
 
 const default_values = {
   basePath: "https://api.mistral.ai/v1",
@@ -51,7 +50,6 @@ export default class LangchainMistralAIChatProvider
   getConfig(options: LLMConfig): Partial<MistralAIInput> {
     return this.cleanConfig({
       apiKey: options.api_key,
-
       // ------------Necessary stuff--------------
       modelKwargs: {
         ...options.modelKwargs,
@@ -71,7 +69,7 @@ export default class LangchainMistralAIChatProvider
 
       maxRetries: 3,
       headers: options.headers || undefined,
-    } as Partial<OpenAIChatInput>);
+    } as Partial<MistralAIInput>);
   }
   async load() {
     const { MistralAI } = await import("@langchain/mistralai");

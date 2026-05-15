@@ -4,7 +4,7 @@ import React from "react";
 import LLMProviderInterface, { LLMConfig } from "../interface";
 import SettingItem from "#/ui/settings/components/item";
 import useGlobal from "#/ui/context/global";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 import Input from "#/ui/settings/components/input";
 import { BaseLLMParams } from "@langchain/core/language_models/llms";
 import debug from "debug";

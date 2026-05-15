@@ -3,7 +3,7 @@ import debug from "debug";
 import LangchainBase from "./base";
 
 import LLMProviderInterface, { LLMConfig } from "../interface";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 import { BaseLanguageModelParams } from "@langchain/core/language_models/base";
 
 import { Dropdown, fetchWithoutCORS, Input, Message, SettingItem, useGlobal } from "../refs";

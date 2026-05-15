@@ -1,6 +1,6 @@
 import React from "react";
 import { generateRandomString, programmingLanguages } from "./utils";
-import { IconCheck, IconClipboard, IconDownload } from "@tabler/icons-react";
+import { IconCheck, IconClipboard, IconDownload } from "#/ui/icons";
 import { FC, memo, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism";

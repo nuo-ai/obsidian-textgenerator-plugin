@@ -5,7 +5,7 @@ import SettingItem from "./item";
 import LLMProviderInterface from "../../../LLMProviders/interface";
 import useGlobal from "../../context/global";
 import Input from "./input";
-import { IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconPlus, IconTrash } from "#/ui/icons";
 import clsx from "clsx";
 import Confirm from "#/ui/components/confirm";
 import ExportImportHandler from "#/ui/components/exportImport";

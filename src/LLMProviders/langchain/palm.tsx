@@ -3,7 +3,7 @@ import LangchainBase from "./base";
 import { GooglePaLMChatInput } from "@langchain/community/chat_models/googlepalm";
 import React from "react";
 import LLMProviderInterface, { LLMConfig } from "../interface";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 import debug from "debug";
 
 import { useGlobal, SettingItem, Input } from "../refs";

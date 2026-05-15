@@ -6,7 +6,7 @@ import type {
 } from "@langchain/openai";
 import { BaseChatModelParams } from "@langchain/core/language_models/chat_models";
 
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 import LLMProviderInterface, { LLMConfig } from "../interface";
 import debug from "debug";
 

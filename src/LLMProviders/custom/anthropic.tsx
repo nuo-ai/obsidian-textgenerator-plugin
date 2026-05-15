@@ -5,7 +5,7 @@ import { getHBValues } from "#/utils/barhandles";
 import SettingItem from "#/ui/settings/components/item";
 import Input from "#/ui/settings/components/input";
 import CustomProvider, { default_values as baseDefaultValues } from "./base";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 
 const globalVars: Record<string, boolean> = {
   n: true,

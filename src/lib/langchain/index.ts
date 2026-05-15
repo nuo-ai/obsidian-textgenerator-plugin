@@ -1,4 +1,6 @@
 // Import text splitters from @langchain/textsplitters in v1
+import type { BaseLanguageModelInterface } from "@langchain/core/language_models/base";
+import type { SummarizationChainParams } from "@langchain/classic/chains";
 import {
   TokenTextSplitter,
   CharacterTextSplitter,
@@ -8,20 +10,18 @@ import {
   MarkdownTextSplitter,
 } from "@langchain/textsplitters";
 
-// Import summarization chain from langchain in v1
-// The loadSummarizationChain is now part of the main langchain package
-// We need to dynamically load it to avoid import issues
+/** Lazy-loaded only when summarization chain config is used (not at plugin startup). */
 export const chains = {
-  loadSummarizationChain: (...args: any[]) => {
-    // Lazy load to avoid build-time issues
-    return import("langchain").then((mod: any) => {
-      if (mod.loadSummarizationChain) {
-        return mod.loadSummarizationChain(...args);
+  loadSummarizationChain: (
+    llm: BaseLanguageModelInterface,
+    params?: SummarizationChainParams,
+  ) =>
+    import("@langchain/classic/chains").then((mod) => {
+      if (!mod.loadSummarizationChain) {
+        throw new Error("loadSummarizationChain is not available");
       }
-      // Fallback for older versions
-      throw new Error("loadSummarizationChain not available");
-    });
-  },
+      return mod.loadSummarizationChain(llm, params);
+    }),
 };
 
 export const splitters = {

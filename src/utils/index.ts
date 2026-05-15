@@ -267,6 +267,7 @@ export function promiseForceFullfil(item: any) {
 }
 
 import { SystemMessagePromptTemplate } from "@langchain/core/prompts";
+import { isHubSystemMessage } from "#/lib/langchain-hub-pull";
 import get from "lodash.get";
 import { Handlebars } from "#/helpers/handlebars-helpers";
 
@@ -291,8 +292,10 @@ export function compileLangMessages(
   const messages: string[] = [];
   let system = "";
   msgs.forEach((msg) => {
-    console.log(msg);
-    if (msg instanceof SystemMessagePromptTemplate) {
+    if (
+      msg instanceof SystemMessagePromptTemplate ||
+      isHubSystemMessage(msg)
+    ) {
       system += compilePrompt(msg.prompt.template, msg.prompt.inputVariables);
     } else {
       messages.push(

@@ -2,7 +2,7 @@ import React, { useEffect, useId, useState } from "react";
 import useGlobal from "../context/global";
 import clsx from "clsx";
 import JSON5 from "json5";
-import { IconFileUpload, IconPackageExport } from "@tabler/icons-react";
+import { IconFileUpload, IconPackageExport } from "#/ui/icons";
 import { currentDate, getCurrentTime } from "#/utils";
 export default function ExportImportHandler(props: {
   getConfig: () => any;

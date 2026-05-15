@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IconEyeClosed, IconEye } from "@tabler/icons-react";
+import { IconEyeClosed, IconEye } from "#/ui/icons";
 import clsx from "clsx";
 import { ZodSchema } from "zod";
 import JSON5 from "json5";

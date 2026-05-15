@@ -1,6 +1,9 @@
 import { Notice } from "obsidian";
 import handlebars, { Exception, createFrame } from "handlebars";
-import { pull } from "langchain/hub";
+import {
+  normalizeHubMessages,
+  pullHubPromptKwargs,
+} from "#/lib/langchain-hub-pull";
 import { getAPI as getDataviewApi } from "obsidian-dataview";
 import moment from "moment";
 import asyncHelpers from "../lib/async-handlebars-helper";
@@ -794,36 +797,26 @@ export default function Helpersfn(self: ContextManager) {
 }
 
 export async function langPull(rep: string) {
-  const k = (await pull(rep)).toJSON() as unknown as {
-    kwargs: {
-      messages?: {
-        prompt: {
-          inputVariables: string[];
-          template: string;
-        };
-      }[];
-      template?: string;
-      input_variables: string[];
-      template_format?: string;
-    };
-  };
+  const kwargs = await pullHubPromptKwargs(rep, {
+    dangerouslyPullPublicPrompt: true,
+  });
 
-  if (k.kwargs.template_format && k.kwargs.template_format != "f-string")
+  if (kwargs.template_format && kwargs.template_format != "f-string")
     throw new Error("only accepts templates with format f-string for now.");
 
-  const data = compileLangMessages(
-    k.kwargs.messages ||
-    (k.kwargs.template
-      ? [
-        {
-          prompt: {
-            template: k.kwargs.template,
-            inputVariables: k.kwargs.input_variables,
-          },
-        },
-      ]
-      : [])
+  const messages = normalizeHubMessages(
+    kwargs.messages ||
+      (kwargs.template
+        ? [
+            {
+              prompt: {
+                template: kwargs.template,
+                inputVariables: kwargs.input_variables ?? [],
+              },
+            },
+          ]
+        : [])
   );
 
-  return data;
+  return compileLangMessages(messages);
 }

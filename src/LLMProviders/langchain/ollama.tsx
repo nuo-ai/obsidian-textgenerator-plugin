@@ -2,7 +2,7 @@ import React from "react";
 import debug from "debug";
 import LangchainBase from "./base";
 import LLMProviderInterface, { LLMConfig } from "../interface";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 import { BaseLLMParams } from "@langchain/core/language_models/llms";
 
 import { OllamaInput } from "@langchain/community/llms/ollama";

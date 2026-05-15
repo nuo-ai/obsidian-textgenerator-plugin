@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { IconDotsVertical } from "@tabler/icons-react";
+import { IconDotsVertical } from "#/ui/icons";
 import { useBoolean } from "usehooks-ts";
 import clsx from "clsx";
 export default function OpenSettingsDropdown(props: { children?: any }) {

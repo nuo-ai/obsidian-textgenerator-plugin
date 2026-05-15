@@ -1,4 +1,4 @@
-import { IconList, IconPencil, IconPlus, IconReload, IconScreenshot, IconVideo, IconWaveSine } from "@tabler/icons-react";
+import { IconList, IconPencil, IconReload, IconScreenshot, IconVideo, IconWaveSine } from "#/ui/icons";
 import clsx from "clsx";
 import React, { useState, useEffect, useId } from "react";
 import LLMProviderInterface from "./interface";

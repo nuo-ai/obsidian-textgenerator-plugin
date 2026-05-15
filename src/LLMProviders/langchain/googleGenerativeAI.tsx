@@ -3,7 +3,7 @@ import LangchainBase from "./base";
 import { GoogleGenerativeAIChatInput } from "@langchain/google-genai";
 import React from "react";
 import LLMProviderInterface, { LLMConfig } from "../interface";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 import debug from "debug";
 import { HeaderEditor, ModelsHandler } from "../utils";
 

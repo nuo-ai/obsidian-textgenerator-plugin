@@ -1,7 +1,7 @@
 import React from "react";
 import LangchainBase from "./base";
 import type { AzureOpenAIInput, OpenAIInput } from "@langchain/openai";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink } from "#/ui/icons";
 
 import LLMProviderInterface, { LLMConfig } from "../interface";
 import debug from "debug";
