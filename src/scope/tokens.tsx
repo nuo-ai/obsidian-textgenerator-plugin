@@ -1,54 +1,58 @@
 import debug from "debug";
 import { AI_MODELS } from "src/constants";
-
-import cl100k_base from "@dqbd/tiktoken/encoders/cl100k_base.json";
-import r50k_base from "@dqbd/tiktoken/encoders/r50k_base.json";
-import p50k_base from "@dqbd/tiktoken/encoders/p50k_base.json";
 import TextGeneratorPlugin from "src/main";
-import wasm from "../../node_modules/@dqbd/tiktoken/tiktoken_bg.wasm";
-import { init, Tiktoken } from "@dqbd/tiktoken/lite/init";
+import { loadTiktokenAssets } from "#/lib/tiktoken-assets";
 import { Notice } from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 const logger = debug("textgenerator:tokens-service");
 
+type TiktokenCtor = import("@dqbd/tiktoken/lite/init").Tiktoken;
+
 export default class TokensScope {
   plugin: TextGeneratorPlugin;
+  private readyPromise?: Promise<void>;
+  private _Tiktoken?: new (...args: any[]) => TiktokenCtor;
+  private _encoders: Record<string, any> = {};
+
   constructor(plugin: TextGeneratorPlugin) {
     this.plugin = plugin;
   }
 
-  async setup() {
-    await init((imports) => WebAssembly.instantiate(wasm, imports));
+  async ensureReady() {
+    if (!this.readyPromise) {
+      this.readyPromise = (async () => {
+        const { Tiktoken, encoders } = await loadTiktokenAssets(this.plugin);
+        this._Tiktoken = Tiktoken as any;
+        this._encoders = encoders;
+      })();
+    }
+    await this.readyPromise;
+  }
 
+  /** @deprecated Prefer ensureReady(); kept for callers that still await setup(). */
+  async setup() {
+    await this.ensureReady();
     return this;
   }
 
   getEncoderFromEncoding(encoding: string) {
-    let model: any;
-    switch (encoding) {
-      case "cl100k_base":
-        model = cl100k_base;
-        break;
-      case "r50k_base":
-        model = r50k_base;
-        break;
-      case "p50k_base":
-        model = p50k_base;
-        break;
-      default:
-        break;
+    if (!this._Tiktoken) {
+      throw new Error(
+        "[TG] TokensScope.getEncoderFromEncoding called before ensureReady()"
+      );
     }
-    const encoder = new Tiktoken(
+    const model = this._encoders[encoding];
+    return new this._Tiktoken(
       model?.bpe_ranks,
       model?.special_tokens,
       model?.pat_str
     );
-    return encoder;
   }
 
   async estimate(context: any) {
+    await this.ensureReady();
     logger("estimateTokens", context);
     const { options, template } = context;
 

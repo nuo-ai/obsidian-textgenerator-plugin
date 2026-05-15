@@ -102,7 +102,7 @@ export default class PackageManager {
       delete this.configuration["packages"];
     }
 
-    await this.fetch();
+    this.refreshRegistryInBackground();
     logger("load end", this.configuration);
 
     // test
@@ -207,6 +207,21 @@ export default class PackageManager {
     );
     logger("checkUpdates end", { packagesIdsToUpdate });
     return packagesIdsToUpdate;
+  }
+
+  /** Refreshes the remote package registry without blocking startup. */
+  refreshRegistryInBackground() {
+    const run = () => {
+      void this.fetch().catch((err) => {
+        console.warn("[TG:PackageManager] background registry refresh failed", err);
+      });
+    };
+
+    if (typeof requestIdleCallback !== "undefined") {
+      requestIdleCallback(run, { timeout: 10_000 });
+    } else {
+      setTimeout(run, 0);
+    }
   }
 
   async fetch() {

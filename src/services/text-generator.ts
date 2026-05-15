@@ -914,7 +914,6 @@ ${removeYAML(content)}
     await this.plugin.getFilesOnLoad();
 
     const templates = this.plugin.textGenerator.getTemplates();
-
     this.templatePaths = {};
     templates.forEach((template: any) => {
       if (template.id) {

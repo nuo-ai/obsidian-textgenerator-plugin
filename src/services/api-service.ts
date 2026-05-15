@@ -33,7 +33,6 @@ export default class RequestHandler {
     );
 
     this.proxyService = new ProxyService();
-    this.load();
   }
 
   async unload() {

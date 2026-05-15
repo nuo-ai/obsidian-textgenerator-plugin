@@ -56,7 +56,6 @@ import { PerformanceTracker } from "./lib/utils";
 
 
 
-
 //    @ts-ignore
 let safeStorage: Electron.SafeStorage;
 
@@ -241,27 +240,36 @@ export default class TextGeneratorPlugin extends Plugin {
     perf.end("API Registration");
 
     perf.start("Layout Ready Setup");
-    this.app.workspace.onLayoutReady(async () => {
+    this.app?.workspace.onLayoutReady(async () => {
       const layoutPerf = PerformanceTracker.getInstance();
+      const _lr0 = performance.now();
       layoutPerf.start("Total Layout Ready");
 
       try {
+        let _t = performance.now();
         layoutPerf.start("Version Manager");
         this.versionManager = new VersionManager(this);
         await this.versionManager.load();
         layoutPerf.end("Version Manager");
+        console.log(`[TG:Startup] Version Manager: ${(performance.now() - _t).toFixed(0)}ms`);
 
+        _t = performance.now();
         layoutPerf.start("Context Manager");
         this.contextManager = new ContextManager(this.app, this);
         layoutPerf.end("Context Manager");
+        console.log(`[TG:Startup] Context Manager: ${(performance.now() - _t).toFixed(0)}ms`);
 
+        _t = performance.now();
         layoutPerf.start("Package Manager");
         this.packageManager = new PackageManager(this.app, this);
         layoutPerf.end("Package Manager");
+        console.log(`[TG:Startup] Package Manager ctor: ${(performance.now() - _t).toFixed(0)}ms`);
 
+        _t = performance.now();
         layoutPerf.start("Text Generator");
         this.textGenerator = new TextGenerator(this.app, this);
         layoutPerf.end("Text Generator");
+        console.log(`[TG:Startup] Text Generator ctor: ${(performance.now() - _t).toFixed(0)}ms`);
 
         layoutPerf.start("Auto Suggest");
         if (this.settings.autoSuggestOptions?.isEnabled)
@@ -285,28 +293,37 @@ export default class TextGeneratorPlugin extends Plugin {
 
         this.app.workspace.updateOptions();
 
-        layoutPerf.start("Final Setup");
+        // Build the LLM registry synchronously so the settings UI (provider
+        // dropdown) works immediately; the actual LLM instance is only needed
+        // when the user triggers generation, so we defer loadllm() below.
+        layoutPerf.start("LLM Registry");
         try {
-          // Execute each operation separately and track performance
-          layoutPerf.start("Tokens Scope Setup");
-          await this.tokensScope.setup();
-          layoutPerf.end("Tokens Scope Setup");
-
-          layoutPerf.start("Text Generator Load");
-          await this.textGenerator.load();
-          layoutPerf.end("Text Generator Load");
-
-          layoutPerf.start("Commands Setup");
-          await this.commands.addCommands();
-          layoutPerf.end("Commands Setup");
-
-          layoutPerf.start("Package Manager Load");
-          await this.packageManager.load();
-          layoutPerf.end("Package Manager Load");
+          await this.textGenerator.loadLLMRegistry();
         } catch (err: any) {
-          console.trace("[TG:Error] in Loading a Service", err);
+          console.error("[TG:Error] loadLLMRegistry", err);
         }
-        layoutPerf.end("Final Setup");
+        layoutPerf.end("LLM Registry");
+
+        // Defer the expensive first-run work (JIT compilation of LangChain
+        // class code, template scanning, config file read) so onLayoutReady
+        // returns quickly and Obsidian can finish its own startup.
+        setTimeout(async () => {
+          try {
+            let t = performance.now();
+            await this.textGenerator.loadllm();
+            console.log(`[TG:Startup] loadllm: ${(performance.now() - t).toFixed(0)}ms`);
+
+            t = performance.now();
+            await this.commands.addCommands();
+            console.log(`[TG:Startup] addCommands: ${(performance.now() - t).toFixed(0)}ms`);
+
+            t = performance.now();
+            await this.packageManager.load();
+            console.log(`[TG:Startup] packageManager.load: ${(performance.now() - t).toFixed(0)}ms`);
+          } catch (err: any) {
+            console.error("[TG:Error] in deferred startup", err);
+          }
+        }, 0);
 
       } catch (err: any) {
         this.handelError(err);
@@ -324,6 +341,7 @@ export default class TextGeneratorPlugin extends Plugin {
       }
 
       layoutPerf.end("Total Layout Ready");
+      console.log(`[TG:Startup] onLayoutReady critical path total: ${(performance.now() - _lr0).toFixed(0)}ms`);
       if (this.settings.options["log-slowest-operations"]) {
         layoutPerf.getSlowestOperations();
       }

@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "npm run build:css && node esbuild.config.mjs",
     "build": "npm run build:css && node esbuild.config.mjs production",
+    "copy:tiktoken-assets": "node scripts/copy-tiktoken-assets.mjs",
     "version": "node version-bump.mjs",
     "version:go": "node ./scripts/version-bump.mjs --go",
     "eslint": "eslint  --fix ./src/**/*.{js,jsx,ts,tsx,json}",

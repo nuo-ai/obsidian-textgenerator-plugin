@@ -12,7 +12,7 @@ export interface GlobalType {
 }
 
 export const defaultValues: GlobalType = {
-  loading: true,
+  loading: false,
   setLoading() {},
   plugin: {} as any,
   triggerReload() {},

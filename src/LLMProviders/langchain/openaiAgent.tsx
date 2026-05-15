@@ -230,6 +230,7 @@ export default class LangchainOpenAIAgentProvider
     messages: Message[],
     reqParams: Partial<LLMConfig>
   ): ReturnType<LLMProviderInterface["calcTokens"]> {
+    await this.plugin.tokensScope.ensureReady();
     const model = reqParams.model;
     const modelInfo =
       AI_MODELS[model as keyof typeof AI_MODELS] || AI_MODELS["gpt-3.5-turbo"];
