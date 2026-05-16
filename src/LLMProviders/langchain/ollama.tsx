@@ -3,9 +3,9 @@ import debug from "debug";
 import LangchainBase from "./base";
 import LLMProviderInterface, { LLMConfig } from "../interface";
 import { IconExternalLink } from "#/ui/icons";
-import { BaseLLMParams } from "@langchain/core/language_models/llms";
 
-import { OllamaInput } from "@langchain/community/llms/ollama";
+import type { OllamaInput } from "@langchain/ollama";
+import type { BaseLLMParams } from "@langchain/core/language_models/llms";
 
 import { Input, SettingItem, useGlobal } from "../refs";
 
@@ -21,7 +21,6 @@ export default class LangchainOllamaProvider
   static displayName = "Ollama";
 
   streamable = true;
-  llmPredict = true;
 
   corsBypass = true;
 

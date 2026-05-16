@@ -127,11 +127,11 @@ export class AutoSuggest {
             }
           );
         } catch (err: any) {
-          // Some upstream providers (LangChain / Google GenAI, etc.) can throw
-          // `Z.map is not a function` depending on runtime bundling.
+          // LangChain chat models can throw "<var>.map is not a function" when
+          // generateMultiple passes the wrong input shape (minified in production).
           // Fallback: call `generate()` N times (still returns suggestions).
           const msg = err?.message || String(err);
-          if (!/Z\.map is not a function/i.test(msg)) throw err;
+          if (!/\.map is not a function/i.test(msg)) throw err;
 
           logger("generateMultiple failed, falling back to generate()", err);
           re = [];
